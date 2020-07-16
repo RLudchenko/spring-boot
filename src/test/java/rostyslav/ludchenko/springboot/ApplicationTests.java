@@ -1,25 +1,26 @@
 package rostyslav.ludchenko.springboot;
 
+import org.junit.Assert;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import rostyslav.ludchenko.springboot.util.FileReader;
-import rostyslav.ludchenko.springboot.util.FileReaderImpl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 public class ApplicationTests {
     private static final String PATH = "test_reviews.txt";
-
-    private FileReader fileReader = new FileReaderImpl();
+    private final FileReader fileReader = Mockito.mock(FileReader.class);
 
     @Test
     public void ReadFromFileTest() {
-        assertEquals(10, fileReader.readFile(PATH).length());
+        Mockito.when(fileReader.readFile(Mockito.anyString())).thenReturn(PATH);
+        assertEquals(16, fileReader.readFile(PATH).length());
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = AssertionError.class)
     public void fileDoesntExistTest() {
-        fileReader.readFile("d");
+        Assert.fail(fileReader.readFile("d"));
     }
 }
